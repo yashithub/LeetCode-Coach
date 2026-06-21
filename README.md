@@ -1,8 +1,31 @@
-# leetcode-roadmap — Phase 1
+# LeetCode Coach — Phase 1
 
+A personalized DSA roadmap and problem recommendation platform that analyzes your LeetCode profile and tells you exactly what to solve next.
 The MVP slice: enter a LeetCode username, see real solved-problem stats and a
 topic-by-topic strength/weakness breakdown. No database, no recommendations
 engine yet, no auth — those are Phase 2+.
+
+## ✨ Preview
+
+### Landing Page
+<div align="center">
+<img src="assets/landingpage.png" width="600" />
+</div>
+
+### Dashboard
+<div align="center">
+<img src="assets/dashboard.png" width="600" />
+</div>
+
+### Recommendations
+<div align="center">
+<img src="assets/recommendations.png" width="600" />
+</div>
+
+### Analysis
+<div align="center">
+<img src="assets/analysis.png" width="600" />
+</div>
 
 ## Run it
 
