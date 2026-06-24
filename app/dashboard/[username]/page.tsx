@@ -9,6 +9,7 @@ import DashboardSkeleton from '@/components/dashboard/DashboardSkeleton';
 import DashboardNav from '@/components/dashboard/DashboardNav';
 import NextBestProblem from '@/components/dashboard/NextBestProblem';
 import StudyPlanCard from '@/components/dashboard/StudyPlanCard';
+import AICoachPanel from '@/components/dashboard/AICoachPanel';
 import WeakTopicsPanel from '@/components/topic-analysis/WeakTopicsPanel';
 import StrongTopicsPanel from '@/components/topic-analysis/StrongTopicsPanel';
 import RecommendationList from '@/components/recommendations/RecommendationList';
@@ -18,7 +19,7 @@ import TopicRadar from '@/components/charts/TopicRadar';
 import WeeklyImprovement from '@/components/charts/WeeklyImprovement';
 import ActivityHeatmap from '@/components/charts/ActivityHeatmap';
 import GlassCard from '@/components/ui/GlassCard';
-import { analyzeMastery, getProfileAverageMastery } from '@/lib/scoring/mastery';
+import { analyzeMastery, getProfileAverageMastery, getStrongestTopics, getWeakestTopics } from '@/lib/scoring/mastery';
 import { generateRecommendations } from '@/lib/recommendations/engine';
 import {
   generateStudyPlan,
@@ -27,6 +28,7 @@ import {
   getRadarData,
 } from '@/lib/recommendations/study-plan';
 import type { ProfileSummary } from '@/lib/leetcode/types';
+import type { CoachProfile } from '@/app/api/ai/coach/route';
 
 type LoadState =
   | { status: 'loading' }
@@ -77,7 +79,30 @@ export default function DashboardPage({
     const heatmap = generateActivityHeatmap(state.profile.solved.all);
     const radar = getRadarData(mastery);
     const avgMastery = getProfileAverageMastery(mastery);
-    return { mastery, recs, plan, weekly, heatmap, radar, avgMastery };
+
+    const totalSubmissions =
+      state.profile.solved.easy * 2 +
+      state.profile.solved.medium * 3 +
+      state.profile.solved.hard * 5;
+    const acceptanceRate =
+      totalSubmissions > 0
+        ? Math.min(100, Math.round((state.profile.solved.all / totalSubmissions) * 100))
+        : 0;
+
+    const strongestTopics = getStrongestTopics(mastery, 5).map((t) => t.category);
+    const weakestTopics = getWeakestTopics(mastery, 5).map((t) => t.category);
+
+    const coachProfile: CoachProfile = {
+      totalSolved: state.profile.solved.all,
+      easySolved: state.profile.solved.easy,
+      mediumSolved: state.profile.solved.medium,
+      hardSolved: state.profile.solved.hard,
+      acceptanceRate,
+      strongestTopics,
+      weakestTopics,
+    };
+
+    return { mastery, recs, plan, weekly, heatmap, radar, avgMastery, coachProfile };
   }, [state]);
 
   if (state.status === 'loading') return <DashboardSkeleton />;
@@ -101,7 +126,7 @@ export default function DashboardPage({
   }
 
   const { profile } = state;
-  const { mastery, recs, plan, weekly, heatmap, radar, avgMastery } = analysis!;
+  const { mastery, recs, plan, weekly, heatmap, radar, avgMastery, coachProfile } = analysis!;
 
   return (
     <div className={`min-h-screen ${mounted ? 'animate-page-in' : ''}`}>
@@ -144,6 +169,10 @@ export default function DashboardPage({
 
         <section id="recommendations">
           <RecommendationList recommendations={recs.recommendations} />
+        </section>
+
+        <section id="ai-coach">
+          <AICoachPanel profile={coachProfile} />
         </section>
 
         <section id="analysis" className="grid lg:grid-cols-2 gap-6">
@@ -194,6 +223,35 @@ export default function DashboardPage({
           </GlassCard>
         </div>
       </div>
+
+      <footer className="border-t border-border/40 py-8 px-6 mt-10">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="font-mono text-xs text-ink-muted">
+            Built with{' '}
+            <span role="img" aria-label="love">❤️</span>
+            {' '}by{' '}
+            <span className="text-orange">Yash</span>
+          </p>
+          <div className="flex items-center gap-4">
+            <a
+              href="https://github.com/yashithub"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono text-xs text-ink-muted hover:text-ink transition-colors"
+            >
+              GitHub
+            </a>
+            <a
+              href="https://linkedin.com/in/yashpradeep23"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono text-xs text-ink-muted hover:text-ink transition-colors"
+            >
+              LinkedIn
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

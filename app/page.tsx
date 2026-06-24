@@ -101,6 +101,35 @@ export default function LandingPage() {
           ))}
         </div>
       </section>
+
+      <footer className="border-t border-border/40 px-6 py-6">
+        <div className="max-w-xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="font-mono text-xs text-ink-muted">
+            Built with{' '}
+            <span role="img" aria-label="love">❤️</span>
+            {' '}by{' '}
+            <span className="text-orange">Yash</span>
+          </p>
+          <div className="flex items-center gap-4">
+            <a
+              href="https://github.com/yashithub"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono text-xs text-ink-muted hover:text-ink transition-colors"
+            >
+              GitHub
+            </a>
+            <a
+              href="https://linkedin.com/in/yashpradeep23"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono text-xs text-ink-muted hover:text-ink transition-colors"
+            >
+              LinkedIn
+            </a>
+          </div>
+        </div>
+      </footer>
     </main>
   );
 }
