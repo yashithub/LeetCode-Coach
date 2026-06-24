@@ -93,6 +93,7 @@ export default function DashboardPage({
     const weakestTopics = getWeakestTopics(mastery, 5).map((t) => t.category);
 
     const coachProfile: CoachProfile = {
+      username: state.profile.username,
       totalSolved: state.profile.solved.all,
       easySolved: state.profile.solved.easy,
       mediumSolved: state.profile.solved.medium,

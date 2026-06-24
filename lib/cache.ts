@@ -25,5 +25,6 @@ export function setCached<T>(key: string, value: T, ttlMs: number): void {
 }
 
 export const TTL = {
-  PROFILE: 5 * 60 * 1000, // 5 min — profile data changes as soon as the user solves something
+  PROFILE: 5 * 60 * 1000,          // 5 min  — profile changes whenever the user solves something
+  AI_COACH: 24 * 60 * 60 * 1000,   // 24 hr  — AI analysis is expensive; cache aggressively
 } as const;
